@@ -4,86 +4,41 @@
 </div>
 </main>
 
-%footer.footer.mt-auto.py-4
+%footer{class: "footer footer-appliance"}
   %div.container
     %div.row
-      %div{class: 'col-6 col-md mb-3'}
-        %h6 PRODUCTS
-        %ul{class: 'nav flex-column list-unstyled'}
-          %li.nav-item
-            = link_to('BioPortal', root_path, class: 'nav-link p-0')
-          %li.nav-item
-            = link_to('BioPortal REST API', Rails.configuration.settings.links[:rest_api], class: 'nav-link p-0',
-                      target: '_blank')
-          %li.nav-item
-            = link_to('BioPortal Virtual Appliance', Rails.configuration.settings.links[:virtual_appliance],
-                      class: 'nav-link p-0', target: '_blank')
-          %li.nav-item
-            = link_to('NCBO Web Widgets', Rails.configuration.settings.links[:widgets], class: 'nav-link p-0',
-                      target: '_blank')
-      %div{class: 'col-6 col-md mb-3 footer-support'}
-        %h6 SUPPORT
-        %ul{class: 'nav flex-column list-unstyled'}
-          %li.nav-item
-            = link_to('Contact Us', feedback_path, class: 'nav-link p-0',
-                      data: {controller: 'popup', action: 'click->popup#open'})
-          %li.nav-item
-            = link_to('Documentation', Rails.configuration.settings.links[:help], class: 'nav-link p-0',
-                      target: '_blank')
-          %li.nav-item
-            = link_to('NCBO Wiki', Rails.configuration.settings.links[:wiki], class: 'nav-link p-0', target: '_blank')
-      %div{class: 'col-6 col-md mb-3'}
-        %h6 ABOUT
-        %ul{class: 'nav flex-column list-unstyled'}
-          %li.nav-item
-            = link_to('About Us', Rails.configuration.settings.links[:about], class: 'nav-link p-0', target: '_blank')
-          %li.nav-item
-            = link_to(raw('Mission & Vision'), Rails.configuration.settings.links[:mission], class: 'nav-link p-0',
-                      target: '_blank')
-          %li.nav-item
-            = link_to('Team', Rails.configuration.settings.links[:team], class: 'nav-link p-0', target: '_blank')
-          %li.nav-item
-            = link_to('Projects', projects_path, class: 'nav-link p-0')
-      %div{class: 'col-12 col-md'}
-        %h6 CONNECT
-        %ul.list-inline
-          %li.list-inline-item
-            = link_to(Rails.configuration.settings.links[:facebook], target: '_blank') do
-              %i.fab.fa-2x.fa-facebook-f
-          %li.list-inline-item
-            = link_to(Rails.configuration.settings.links[:twitter], target: '_blank') do
-              %i.fab.fa-2x.fa-twitter
-          %li.list-inline-item
-            = link_to(Rails.configuration.settings.links[:github], target: '_blank') do
-              %i.fab.fa-2x.fa-github
-    %div.row.legal-text
       %div.col
-        = t('.grant_html')
-    %div.row.pt-1.legal-text
-      %div.col
-        = t('.free_access', site: "#{$SITE}")
-    %div.row.pt-1.legal-text
-      %div.col
-        = t('.copyright_html')
-    %div.row.pt-2
-      %div.col
-        %ul.list-inline.nav
-          %li.list-inline-item.nav-item
-            = link_to('Cite Us', Rails.configuration.settings.links[:cite], class: 'nav-link p-0', target: '_blank')
-          %li.list-inline-item
-            %i.fas.fa-ellipsis-v{"aria-hidden" => "true"}
-          %li.list-inline-item
-            = link_to('Privacy Policy', Rails.configuration.settings.links[:privacy_policy],class: 'nav-link p-0',
-                      target: '_blank')
-          %li.list-inline-item
-            %i.fas.fa-ellipsis-v{"aria-hidden" => "true"}
-          %li.list-inline-item
-            = link_to('Terms of Use', Rails.configuration.settings.links[:terms], class: 'nav-link p-0',
-                      target: '_blank')
-          %li.list-inline-item
-            %i.fas.fa-ellipsis-v{"aria-hidden" => "true"}
-          %li.list-inline-item
-            = link_to('Use of Cookies', Rails.configuration.settings.links[:cookies], class: 'nav-link p-0',
-                      target: '_blank')
+        %div.d-flex
+          %ul{class: "list-inline mx-auto justify-content-center"}
+            %li.list-inline-item
+              = link_to("A Matolab Project", "https://matolab.org/", target: "_blank", rel: "noopener noreferrer")
+            %li.list-inline-item
+              %i.fas.fa-ellipsis-v{"aria-hidden": "true"}
+            %li.list-inline-item
+              = link_to("Fraunhofer Materials", "https://www.materials.fraunhofer.de/", target: "_blank", rel: "noopener noreferrer")
+            %li.list-inline-item
+              %i.fas.fa-ellipsis-v{"aria-hidden": "true"}
+            %li.list-inline-item
+              = link_to("BAM", "https://www.bam.de/Navigation/DE/Home/home.html", target: "_blank", rel: "noopener noreferrer")
+            %li.list-inline-item
+              %i.fas.fa-ellipsis-v{"aria-hidden": "true"}
+            %li.list-inline-item
+              = link_to("MaterialDigital", "https://www.materialdigital.de/", target: "_blank", rel: "noopener noreferrer")
+            %li.list-inline-item
+              %i.fas.fa-ellipsis-v{"aria-hidden": "true"}
+            %li.list-inline-item
+              = link_to("NFDI-MatWerk", "https://nfdi-matwerk.de/", target: "_blank", rel: "noopener noreferrer")
+            %li.list-inline-item
+              %i.fas.fa-ellipsis-v{"aria-hidden": "true"}
+            %li.list-inline-item
+              = link_to("OAGi Industrial Ontologies", "https://oagi.org/pages/industrial-ontologies", target: "_blank", rel: "noopener noreferrer")
+            %li.list-inline-item
+              %i.fas.fa-ellipsis-v{"aria-hidden": "true"}
+            %li.list-inline-item
+              = link_to("Mat-O-Lab", "https://mat-o-lab.github.io/OrgSite/", target: "_blank", rel: "noopener noreferrer")
+            %li.list-inline-item
+              %i.fas.fa-ellipsis-v{"aria-hidden": "true"}
+            %li.list-inline-item
+              = link_to("Powered by BioPortal", "https://bioportal.bioontology.org/", target: "_blank", rel: "noopener noreferrer")
 
 = javascript_include_tag "application"

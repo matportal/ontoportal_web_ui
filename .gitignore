@@ -23,7 +23,10 @@ config/secrets.yml
 **.DS_Store
 /public/**/cache/**
 /public/umls/*
+/public/assets
 /public/assets/
+/public/biomixer-modern/
+/public/biomixer/assets.modern.bak/
 nohup.out
 
 # Ignore editor files
@@ -55,3 +58,8 @@ docker-sync.yml
 /config/credentials/production.key
 /config/credentials/appliance.key
 origin/
+
+# Local docker overrides / scratch copies (MatPortal deployment work).
+/app/views/home/index.container.html.haml
+/app/views/home/index.docker_override.html.haml
+/app/views/layouts/_footer.docker_override.html.haml

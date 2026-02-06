@@ -3,7 +3,7 @@
 -------------------------------------------------- */
 .nav-tabs {
   --bs-nav-tabs-link-active-color: white;
-  --bs-nav-tabs-link-active-bg: #234979;
+  --bs-nav-tabs-link-active-bg: var(--primary-color);
 }
 
 main > .container-fluid {
@@ -11,9 +11,9 @@ main > .container-fluid {
 }
 
 .footer {
-  height: 330px; /* Set the fixed height of the footer here */
-  color: #757575;
-  background-color: #ccc;
+  color: #6c757d;
+  background-color: #fff;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 body{
@@ -30,17 +30,21 @@ footer.footer .list-inline-item:not(:last-child) {
   margin-right: 1rem;
 }
 
-.not-disabled {
-  background-color: white !important;
+footer.footer.footer-appliance {
+  padding: 18px 0;
 }
 
-@media only screen and (max-width: 992px) {
-  body {
-    margin-bottom: 350px;
-  }
-  .footer {
-    height: 350px;
-  }
+footer.footer.footer-appliance a {
+  color: var(--primary-color);
+}
+
+footer.footer.footer-appliance a:hover {
+  color: var(--hover-color);
+  text-decoration: underline;
+}
+
+.not-disabled {
+  background-color: white !important;
 }
 
 .ontologies.index main.grid-container {

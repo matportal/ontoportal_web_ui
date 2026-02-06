@@ -1,92 +1,238 @@
-- @title = t('.title', organization: "#{$ORG_SITE}")
+- @title = t("home.index.title", organization: "#{$ORG_SITE}")
 
 - unless $FRONT_NOTICE.nil? || $FRONT_NOTICE.empty? || cookies[:front_page_notice_closed].eql?("true")
   :javascript
     function close_message(){
-      var exdate = new Date();
-      exdate.setDate(exdate.getDate() + 7);
-      document.cookie="front_page_notice_closed=true; expires="+exdate.toGMTString();
-      jQuery("#notice_message").hide();
+    var exdate = new Date();
+    exdate.setDate(exdate.getDate() + 7);
+    document.cookie="front_page_notice_closed=true; expires="+exdate.toGMTString();
+    jQuery("#notice_message").hide();
     }
-    %p#notice_message{:style => "padding: 10px; margin: 10px; border:1px solid #EFEFEF; background-color: #F9F9F9;"}
+
+  %p#notice_message{:style => "padding: 10px; margin: 10px; border:1px solid #EFEFEF; background-color: #F9F9F9;"}
     = $FRONT_NOTICE
     \&nbsp;&nbsp;
     %a{:href => "#", :onclick => "close_message(); return false;", :style => "font-size: small; color: darkGray;"} [close]
 
-%div.container.pb-4.pb-md-5
-  %div.row
-    %div.col
-      %div.px-2.py-2.pt-md-5.border-bottom.text-center
-        %h2
-          = t('.welcome', site: "#{$SITE}")
-          %small.text-muted
-            = t('.tagline')
-  %div{class: 'row row-cols-1 row-cols-md-2 g-3 pt-4'}
-    %div.col
-      -# Search for a class across ontologies
-      %div.card.h-100
-        %h5.card-header Search for a class
-        %div.card-body 
-          = form_tag(search_path, method: 'get') do
-            %div.input-group.mb-3
-              = text_field_tag('query', nil, class: 'form-control', placeholder: t('.query_placeholder'))
-              = button_tag(class: 'btn btn-outline-primary') do
-                %i.fas.fa-search.fa-lg{'aria-hidden': 'true'}
-            = link_to('Advanced search', search_path(opt: 'advanced'), class: 'btn btn-link')
-    %div.col
-      -# Search for an ontology
-      %div.card.h-100
-        %h5.card-header Find an ontology
-        %div.card-body 
-          %input#find_ontology_id{type: 'hidden'}
-          %div.input-group.mb-3
-            = text_field_tag('ontology', nil, id: 'find_ontology', class: 'form-control',
-                             data: {ontologynames: @ontology_names}, placeholder: t('.find_ontology_placeholder'))
-            = button_tag(class: 'btn btn-outline-primary', onclick: 'jumpToValueOntology()') do
-              %i.fas.fa-search.fa-lg{'aria-hidden': 'true'}
-          %div.dropdown
-            %div.btn-group
-              = tag.button('Browse ontologies', class: 'btn btn-outline-primary dropdown-toggle', type: 'button',
-                           'data-bs-toggle': 'dropdown', 'aria-expanded': 'false')
-              %ul.dropdown-menu
-                = link_to('All', ontologies_path, class: 'dropdown-item')
-                %li
-                  %hr.dropdown-divider
-                %li
-                  %h6.dropdown-header Browse by group
-                - @groups.each do |group|
-                  = link_to(group[:name], ontologies_path(filter: group[:acronym]), class: 'dropdown-item')
-    %div.col
-      -# Ontology visits chart
-      %div.card.h-100
-        %h5.card-header Ontology visits #{"in full #{$SITE} " if at_slice?} (#{@analytics.date.strftime("%B %Y")})
-        = tag.div(id: 'ontology-visits-chart', class: 'card-body',
-                  data: {ontnames: @anal_ont_names, ontnumbers: @anal_ont_numbers}) do
-          %canvas#myChart
-          = link_to('More', visits_path, class: 'btn btn-link')
-    %div.col
-      -# Statistics list group
-      %div.card.h-100
-        %h5.card-header Statistics #{"in full #{$SITE}" if at_slice?}
-        %div.card-body
-          %ul.list-group.list-group-flush
-            %li.list-group-item 
-              %div.d-flex.justify-content-between.align-items-center
-                Ontologies
+.home-header-container
+  .home-header-background
+  .home-bubbles
+    .home-random-bubbles
+      %img{:src => asset_path("home-random-bubbles.svg")}/
+    - unless @anal_ont_names.empty?
+      .home-bubble.home-bubble-one
+        %a.h5{href:"/ontologies/#{@anal_ont_names[0]}", style: "color: white !important"}
+          = @anal_ont_names[0]
+        %p 
+          = format_number_abbreviated(@anal_ont_numbers[0]) + " " + t('visits.visits')
+      .home-bubble.home-bubble-two
+        %a.h5{href:"/ontologies/#{@anal_ont_names[1]}", style: "color: white !important"}
+          = @anal_ont_names[1]
+        %p 
+          = format_number_abbreviated(@anal_ont_numbers[1]) + " " + t('visits.visits')
+      .home-bubble.home-bubble-three
+        %a.h5{href:"/ontologies/#{@anal_ont_names[2]}", style: "color: white !important"}
+          = @anal_ont_names[2]
+        %p 
+          = format_number_abbreviated(@anal_ont_numbers[2]) + " " + t('visits.visits')
+      %a.home-bubble.home-bubble-four{:href => "/visits"}
+        .h5 ...
+
+  .home-header-title-container
+    .home-header-title
+      %h4
+        = t('home.index.welcome', site: $SITE)
+      %p
+        = t('home.index.tagline')
+      = ontologies_content_autocomplete
+
+.home-body-container
+  .home-section
+    %h4= t('home.ontology_upload', site: portal_name)
+    %hr.home-section-line/
+    %p= t('home.ontology_upload_desc')
+    %p= t('home.ontology_upload_benefits', site: $SITE)
+    .home-upload-benifits
+      - upload_benefits = [ t('home.benefit1'), t('home.benefit2'), t('home.benefit3'), t('home.benefit4'), t('home.benefit5')]
+      - upload_benefits.each do |benefit|
+        %div
+          = inline_svg_tag 'check-outlined.svg'
+          %p
+            = benefit
+    .home-ontologies-actions
+      .home-upload-ontology-button
+        = upload_ontology_button
+      .discover-ontologies
+        = discover_ontologies_button
+  .home-section
+    %h4
+      = t('home.agroportal_figures', site: current_slice_name || portal_name)
+    %hr.home-section-line/
+    = turbo_frame_tag "metrics_frame", src: home_metrics_path, loading: "lazy" do
+      .home-statistics-container
+        .home-statistics
+          - 7.times do
+            .home-statistics-item
+              %hr
+              %div
                 %h4
-                  %span.badge.text-bg-secondary= number_with_delimiter(@ont_count)
-            %li.list-group-item
-              %div.d-flex.justify-content-between.align-items-center
-                Classes
-                %h4
-                  %span.badge.text-bg-secondary= number_with_delimiter(@cls_count)
-            %li.list-group-item
-              %div.d-flex.justify-content-between.align-items-center
-                Properties
-                %h4
-                  %span.badge.text-bg-secondary= number_with_delimiter(@prop_count)
-            %li.list-group-item
-              %div.d-flex.justify-content-between.align-items-center
-                Mappings
-                %h4
-                  %span.badge.text-bg-secondary= number_with_delimiter(@map_count)
+                  .placeholder{style: "width: 60px; height: 24px; background: #f0f0f0; display: inline-block;"}
+                %p
+                  .placeholder{style: "width: 80px; height: 16px; background: #f0f0f0; display: inline-block;"}
+        .home-statistics-link.justify-content-end{style: @analytics.empty? && "visibility: hidden"}
+          = link_to t("home.see_details"),'/statistics', target: "_blank"
+
+  .home-section
+    %h4
+      = t('home.recommender_annotator')
+    %hr.home-section-line/
+    .home-card{'data-controller': 'sample-text'}
+      %form{action: "/annotator_recommender_form", method: "post"}
+        %textarea.home-recommendations-and-annotations{rows: "4" , placeholder: t('home.paste_text_prompt'), name: "input", 'data-sample-text-target': "input"}
+        %input.d-none{type: "submit", name: "submit_button" ,value: "annotator", id: "annotator_submit"}/
+        %input.d-none{type: "submit" , name: "submit_button" ,value: "recommender", id: "recommender_submit"}/
+        .home-services-buttons.container
+          .insert-sample-text-button{'data-action': 'click->sample-text#annotator_recommender', 'data-sample-text': t("annotator.sample_text")}
+            %div
+              = t('annotator.insert_sample_text')
+            = inline_svg_tag 'icons/arrow-curved-up.svg'
+          .home-get-recommendations{onclick: "submitRecommender()"}
+            %p= t('home.get_recommendations')
+            = inline_svg_tag "play.svg", class: "home-play-icon"
+          .home-services-buttons
+            .home-get-annotations{onclick: "submitAnnotator()"}
+              %p= t('home.get_annotations')
+              %img{:src => asset_path("play-white.svg")}/
+  .home-section
+    .home-section-sub-sections-container
+      .home-sub-section-left
+        %div.align-items
+          %h4.margin-items= t('home.fairness')
+          = render Display::InfoTooltipComponent.new(text: t('home.info_tooltip_text') )
+          = fairness_link(style: 'margin-bottom: 6px; vertical-align: top;')
+        %hr.home-section-line/
+        .home-card.home-fair-scores
+          %div.fair-scores-badge-section
+            %h2.p-2.badge.badge-secondary.fair-scores-badge-margin
+              = t('home.average')
+              %span.badge.badge-light
+                %span#fair-score-average
+                  0 (0%)
+            %h2.p-2.badge.badge-secondary.fair-scores-badge-margin
+              = t('home.min')
+              %span.badge.badge-light
+                %span#fair-score-min
+                  0 (0%)
+            %h2.p-2.badge.badge-secondary.fair-scores-badge-margin
+              = t('home.max')
+              %span.badge.badge-light
+                %span#fair-score-max
+                  0 (0%)
+          - if fairness_service_enabled?
+            %div#fair-home{data:{controller:"fair-score-home"}}
+              = render partial: "shared/fair_score_bars", locals: {data: nil}
+            %a{:href => "/landscape#fairness_assessment"}
+              %div.home-fair-details
+                %p= t('home.fair_details')
+      - if agents_enabled?
+        .home-sub-section-middle
+          %div.align-items
+            %h4.margin-items= t('home.agents')
+            = render Display::InfoTooltipComponent.new(text: t('home.index.agents_tooltip', portalName: $SITE) )
+            = render IconWithTooltipComponent.new(icon: 'json.svg',link: agents_rest_url, size:'small', style: "margin:0px 0px 6px 6px; vertical-align: top;", title: t("components.go_to_api"))  
+          %hr.home-section-line/
+          = turbo_frame_tag "agents_frame", src: home_agents_path, loading: "lazy" do
+            .home-agents-container
+              .home-agents-list
+                - 5.times do
+                  .home-agents-item
+                    %h4.d-flex.justify-content-between
+                      .d-flex
+                        .agent-chip-circle
+                          .placeholder.home-placeholder-agent-circle
+                      .d-flex.align-items-center
+                        .placeholder.home-placeholder-agent-name
+              .home-agents-actions
+                .placeholder.home-placeholder-agents-badge
+                .placeholder.home-placeholder-see-details
+      - if !$TWITTER_NEWS.blank?
+        .home-sub-section-right
+          %h4= t('home.twitter_news')
+          %hr.home-section-line
+          .home-card.home-twitter-news
+            %a.twitter-timeline{"data-height" => "360", :href => $TWITTER_NEWS}
+              .home-twitter-loader
+                = render LoaderComponent.new(type: 'pulsing')
+            %script{:async => "", :charset => "utf-8", :src => "https://platform.twitter.com/widgets.js"}
+
+  - if slices_enabled?
+    .home-section
+      .home-section-title
+        .text
+          = "#{portal_name} slices"
+        %hr.home-section-line/
+      .home-section-description
+        .div
+          = t('home.slices_description')
+      .home-slices-container
+        - @slices.each do |slice, index|
+          - slice_link = "https://#{slice.acronym}.#{$UI_URL.sub("https://", "")}"
+          .home-slice{'data-controller': 'tooltip', title: content_tag(:div, slice.description, style: 'max-width: 200px')}
+            = link_to slice_link do
+              .home-slice-icon
+                .home-slice-ontologies
+                  = slice.ontologies.length
+                = inline_svg 'icons/slices.svg', width: "70", height: "70"
+
+              .home-slice-name
+                = "#{slice.name} (#{slice.acronym})"
+        = render Buttons::RegularButtonComponent.new(id:'regular-button', value: t('home.suggest_slice'), variant: "secondary", state: "regular", href: '/feedback') do |btn|
+          - btn.icon_right do
+            = inline_svg_tag "icons/plus.svg"
+
+  .home-ontoportal-instances
+    .ontoportal-instances-container
+      .home-section-title.ontoportal
+        .text.mr-2
+          = t('home.ontoportal_instances')
+        %hr.home-section-line/
+
+      .home-section-description
+        .div
+          = home_ontoportal_description
+      .home-support-items
+        - $PORTALS_INSTANCES&.each do |portal|
+          = portal_config_tooltip(portal[:name]) do
+            %div.text-center
+              = link_to portal[:ui], target: '_blank', class: 'home-logo-instances', style: "background-color: #{portal[:color]}" do
+                = inline_svg('logo-white.svg', width: "35", height: "26")
+              %p{style: "color: #{portal[:color]}"}
+                = portal[:name]
+  .home-section
+    .home-section-title
+      .text
+        = t('home.support_and_collaborations')
+      %hr.home-section-line/
+    .home-support-items.matportal-collab-logos
+      %a{href: "https://www.materials.fraunhofer.de/", target: "_blank", rel: "noopener noreferrer"}
+        %img{src: "/matportal-logos/fraunhofer-materials.gif", alt: "Fraunhofer Materials"}
+      %a{href: "https://www.bam.de/Navigation/DE/Home/home.html", target: "_blank", rel: "noopener noreferrer"}
+        %img{src: "/matportal-logos/bam.png", alt: "BAM"}
+      %a{href: "https://www.materialdigital.de/", target: "_blank", rel: "noopener noreferrer"}
+        %img{src: "/matportal-logos/materialdigital.svg", alt: "MaterialDigital"}
+      %a{href: "https://nfdi-matwerk.de/", target: "_blank", rel: "noopener noreferrer"}
+        %img{src: "/matportal-logos/nfdi-matwerk.png", alt: "NFDI-MatWerk"}
+      %a{href: "https://oagi.org/pages/industrial-ontologies", target: "_blank", rel: "noopener noreferrer"}
+        %img{src: "/matportal-logos/oagi.png", alt: "OAGi Industrial Ontologies"}
+      %a{href: "https://mat-o-lab.github.io/OrgSite/", target: "_blank", rel: "noopener noreferrer"}
+        %img{src: "/matportal-logos/mat-o-lab.png", alt: "Mat-O-Lab"}
+
+= init_federation_portals_status
+
+:javascript
+  function submitAnnotator(){
+  document.getElementById("annotator_submit").click()
+  }
+  function submitRecommender(){
+  document.getElementById("recommender_submit").click()
+  }

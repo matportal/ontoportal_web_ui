@@ -1,5 +1,5 @@
 # Make sure it matches the Ruby version in .ruby-version and Gemfile
-ARG RUBY_VERSION=3.2
+ARG RUBY_VERSION=3.1.6
 FROM ruby:${RUBY_VERSION}-slim-bookworm
 
 WORKDIR /app
@@ -48,7 +48,9 @@ RUN cp config/bioportal_config_env.rb.sample config/bioportal_config_production.
 
 RUN if [ "${RAILS_ENV}" != "development" ]; then \
   bundle exec bootsnap precompile --gemfile app/ lib/ && \
-  SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile; fi
+  # Asset precompile loads the Rails environment; set a dummy API_URL so
+  # ApplicationController constants (REST_URI_BATCH) don't explode at build time.
+  SECRET_KEY_BASE_DUMMY=1 API_URL=http://localhost:9393 ./bin/rails assets:precompile; fi
 
 EXPOSE 3000
 
