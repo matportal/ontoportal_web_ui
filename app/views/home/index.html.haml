@@ -70,19 +70,20 @@
     %h4
       = t('home.agroportal_figures', site: portal_name)
     %hr.home-section-line/
-    = turbo_frame_tag "metrics_frame", src: home_metrics_path, loading: "lazy" do
-      .home-statistics-container
-        .home-statistics
-          - 7.times do
-            .home-statistics-item
-              %hr
-              %div
-                %h4
-                  .placeholder{style: "width: 60px; height: 24px; background: #f0f0f0; display: inline-block;"}
-                %p
-                  .placeholder{style: "width: 80px; height: 16px; background: #f0f0f0; display: inline-block;"}
-        .home-statistics-link.justify-content-end{style: @analytics.empty? && "visibility: hidden"}
-          = link_to t("home.see_details"),'/statistics', target: "_blank"
+    .home-statistics-container
+      - stats = [
+        [@ont_count, "Ontologies"],
+        [@cls_count, "Classes"],
+        [@prop_count, "Properties"],
+        [@map_count, "Mappings"],
+      ]
+      .home-statistics
+        - stats.each do |value, label|
+          .home-statistics-item
+            %hr
+            %div
+              %h4= number_with_delimiter(value)
+              %p= label
 
   .home-section
     %h4
