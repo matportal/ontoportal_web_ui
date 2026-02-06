@@ -71,12 +71,7 @@
       = t('home.agroportal_figures', site: portal_name)
     %hr.home-section-line/
     .home-statistics-container
-      - stats = [
-        [@ont_count, "Ontologies"],
-        [@cls_count, "Classes"],
-        [@prop_count, "Properties"],
-        [@map_count, "Mappings"],
-      ]
+      - stats = [[@ont_count, "Ontologies"], [@cls_count, "Classes"], [@prop_count, "Properties"], [@map_count, "Mappings"]]
       .home-statistics
         - stats.each do |value, label|
           .home-statistics-item
