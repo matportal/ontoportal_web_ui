@@ -68,7 +68,7 @@
         = discover_ontologies_button
   .home-section
     %h4
-      = t('home.agroportal_figures', site: current_slice_name || portal_name)
+      = t('home.agroportal_figures', site: portal_name)
     %hr.home-section-line/
     = turbo_frame_tag "metrics_frame", src: home_metrics_path, loading: "lazy" do
       .home-statistics-container
