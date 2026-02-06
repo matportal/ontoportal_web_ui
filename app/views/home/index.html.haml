@@ -3,72 +3,44 @@
 - unless $FRONT_NOTICE.nil? || $FRONT_NOTICE.empty? || cookies[:front_page_notice_closed].eql?("true")
   :javascript
     function close_message(){
-    var exdate = new Date();
-    exdate.setDate(exdate.getDate() + 7);
-    document.cookie="front_page_notice_closed=true; expires="+exdate.toGMTString();
-    jQuery("#notice_message").hide();
+      var exdate = new Date();
+      exdate.setDate(exdate.getDate() + 7);
+      document.cookie="front_page_notice_closed=true; expires="+exdate.toGMTString();
+      jQuery("#notice_message").hide();
     }
 
-  %p#notice_message{:style => "padding: 10px; margin: 10px; border:1px solid #EFEFEF; background-color: #F9F9F9;"}
+  %p#notice_message{style: "padding: 10px; margin: 10px; border:1px solid #EFEFEF; background-color: #F9F9F9;"}
     = $FRONT_NOTICE
     \&nbsp;&nbsp;
-    %a{:href => "#", :onclick => "close_message(); return false;", :style => "font-size: small; color: darkGray;"} [close]
+    %a{href: "#", onclick: "close_message(); return false;", style: "font-size: small; color: darkGray;"} [close]
 
 .home-header-container
   .home-header-background
   .home-bubbles
     .home-random-bubbles
-      %img{:src => asset_path("home-random-bubbles.svg")}/
-    - unless @anal_ont_names.empty?
-      .home-bubble.home-bubble-one
-        %a.h5{href:"/ontologies/#{@anal_ont_names[0]}", style: "color: white !important"}
-          = @anal_ont_names[0]
-        %p 
-          = format_number_abbreviated(@anal_ont_numbers[0]) + " " + t('visits.visits')
-      .home-bubble.home-bubble-two
-        %a.h5{href:"/ontologies/#{@anal_ont_names[1]}", style: "color: white !important"}
-          = @anal_ont_names[1]
-        %p 
-          = format_number_abbreviated(@anal_ont_numbers[1]) + " " + t('visits.visits')
-      .home-bubble.home-bubble-three
-        %a.h5{href:"/ontologies/#{@anal_ont_names[2]}", style: "color: white !important"}
-          = @anal_ont_names[2]
-        %p 
-          = format_number_abbreviated(@anal_ont_numbers[2]) + " " + t('visits.visits')
-      %a.home-bubble.home-bubble-four{:href => "/visits"}
-        .h5 ...
+      %img{src: asset_path("home-random-bubbles.svg")}/
 
   .home-header-title-container
     .home-header-title
-      %h4
-        = t('home.index.welcome', site: $SITE)
-      %p
-        = t('home.index.tagline')
+      %h4= t("home.index.welcome", site: $SITE)
+      %p= t("home.index.tagline")
       .search-inputs
-        = form_tag(search_path, method: 'get') do
-          = text_field_tag('query', nil, placeholder: t('home.index.query_placeholder'), autocomplete: 'off')
+        = form_tag(search_path, method: "get") do
+          = text_field_tag("query", nil, placeholder: t("home.index.query_placeholder"), autocomplete: "off")
 
 .home-body-container
   .home-section
-    %h4= t('home.ontology_upload', site: portal_name)
+    %h4 Do you want to share an ontology?
     %hr.home-section-line/
-    %p= t('home.ontology_upload_desc')
-    %p= t('home.ontology_upload_benefits', site: $SITE)
-    .home-upload-benifits
-      - upload_benefits = [ t('home.benefit1'), t('home.benefit2'), t('home.benefit3'), t('home.benefit4'), t('home.benefit5')]
-      - upload_benefits.each do |benefit|
-        %div
-          = inline_svg_tag 'check-outlined.svg'
-          %p
-            = benefit
+    %p Uploading and sharing on MatPortal helps others discover and reuse your work.
     .home-ontologies-actions
       .home-upload-ontology-button
         = upload_ontology_button
       .discover-ontologies
         = discover_ontologies_button
+
   .home-section
-    %h4
-      = t('home.agroportal_figures', site: portal_name)
+    %h4 MatPortal in figures
     %hr.home-section-line/
     .home-statistics-container
       - stats = [[@ont_count, "Ontologies"], [@cls_count, "Classes"], [@prop_count, "Properties"], [@map_count, "Mappings"]]
@@ -81,135 +53,8 @@
               %p= label
 
   .home-section
-    %h4
-      = t('home.recommender_annotator')
-    %hr.home-section-line/
-    .home-card{'data-controller': 'sample-text'}
-      %form{action: "/annotator_recommender_form", method: "post"}
-        %textarea.home-recommendations-and-annotations{rows: "4" , placeholder: t('home.paste_text_prompt'), name: "input", 'data-sample-text-target': "input"}
-        %input.d-none{type: "submit", name: "submit_button" ,value: "annotator", id: "annotator_submit"}/
-        %input.d-none{type: "submit" , name: "submit_button" ,value: "recommender", id: "recommender_submit"}/
-        .home-services-buttons.container
-          .insert-sample-text-button{'data-action': 'click->sample-text#annotator_recommender', 'data-sample-text': t("annotator.sample_text")}
-            %div
-              = t('annotator.insert_sample_text')
-            = inline_svg_tag 'icons/arrow-curved-up.svg'
-          .home-get-recommendations{onclick: "submitRecommender()"}
-            %p= t('home.get_recommendations')
-            = inline_svg_tag "play.svg", class: "home-play-icon"
-          .home-services-buttons
-            .home-get-annotations{onclick: "submitAnnotator()"}
-              %p= t('home.get_annotations')
-              %img{:src => asset_path("play-white.svg")}/
-  .home-section
-    .home-section-sub-sections-container
-      .home-sub-section-left
-        %div.align-items
-          %h4.margin-items= t('home.fairness')
-          = render Display::InfoTooltipComponent.new(text: t('home.info_tooltip_text') )
-          = fairness_link(style: 'margin-bottom: 6px; vertical-align: top;')
-        %hr.home-section-line/
-        .home-card.home-fair-scores
-          %div.fair-scores-badge-section
-            %h2.p-2.badge.badge-secondary.fair-scores-badge-margin
-              = t('home.average')
-              %span.badge.badge-light
-                %span#fair-score-average
-                  0 (0%)
-            %h2.p-2.badge.badge-secondary.fair-scores-badge-margin
-              = t('home.min')
-              %span.badge.badge-light
-                %span#fair-score-min
-                  0 (0%)
-            %h2.p-2.badge.badge-secondary.fair-scores-badge-margin
-              = t('home.max')
-              %span.badge.badge-light
-                %span#fair-score-max
-                  0 (0%)
-          - if fairness_service_enabled?
-            %div#fair-home{data:{controller:"fair-score-home"}}
-              = render partial: "shared/fair_score_bars", locals: {data: nil}
-            %a{:href => "/landscape#fairness_assessment"}
-              %div.home-fair-details
-                %p= t('home.fair_details')
-      - if agents_enabled?
-        .home-sub-section-middle
-          %div.align-items
-            %h4.margin-items= t('home.agents')
-            = render Display::InfoTooltipComponent.new(text: t('home.index.agents_tooltip', portalName: $SITE) )
-            = render IconWithTooltipComponent.new(icon: 'json.svg',link: agents_rest_url, size:'small', style: "margin:0px 0px 6px 6px; vertical-align: top;", title: t("components.go_to_api"))  
-          %hr.home-section-line/
-          = turbo_frame_tag "agents_frame", src: home_agents_path, loading: "lazy" do
-            .home-agents-container
-              .home-agents-list
-                - 5.times do
-                  .home-agents-item
-                    %h4.d-flex.justify-content-between
-                      .d-flex
-                        .agent-chip-circle
-                          .placeholder.home-placeholder-agent-circle
-                      .d-flex.align-items-center
-                        .placeholder.home-placeholder-agent-name
-              .home-agents-actions
-                .placeholder.home-placeholder-agents-badge
-                .placeholder.home-placeholder-see-details
-      - if !$TWITTER_NEWS.blank?
-        .home-sub-section-right
-          %h4= t('home.twitter_news')
-          %hr.home-section-line
-          .home-card.home-twitter-news
-            %a.twitter-timeline{"data-height" => "360", :href => $TWITTER_NEWS}
-              .home-twitter-loader
-                = render LoaderComponent.new(type: 'pulsing')
-            %script{:async => "", :charset => "utf-8", :src => "https://platform.twitter.com/widgets.js"}
-
-  - if slices_enabled?
-    .home-section
-      .home-section-title
-        .text
-          = "#{portal_name} slices"
-        %hr.home-section-line/
-      .home-section-description
-        .div
-          = t('home.slices_description')
-      .home-slices-container
-        - @slices.each do |slice, index|
-          - slice_link = "https://#{slice.acronym}.#{$UI_URL.sub("https://", "")}"
-          .home-slice{'data-controller': 'tooltip', title: content_tag(:div, slice.description, style: 'max-width: 200px')}
-            = link_to slice_link do
-              .home-slice-icon
-                .home-slice-ontologies
-                  = slice.ontologies.length
-                = inline_svg 'icons/slices.svg', width: "70", height: "70"
-
-              .home-slice-name
-                = "#{slice.name} (#{slice.acronym})"
-        = render Buttons::RegularButtonComponent.new(id:'regular-button', value: t('home.suggest_slice'), variant: "secondary", state: "regular", href: '/feedback') do |btn|
-          - btn.icon_right do
-            = inline_svg_tag "icons/plus.svg"
-
-  .home-ontoportal-instances
-    .ontoportal-instances-container
-      .home-section-title.ontoportal
-        .text.mr-2
-          = t('home.ontoportal_instances')
-        %hr.home-section-line/
-
-      .home-section-description
-        .div
-          = home_ontoportal_description
-      .home-support-items
-        - $PORTALS_INSTANCES&.each do |portal|
-          = portal_config_tooltip(portal[:name]) do
-            %div.text-center
-              = link_to portal[:ui], target: '_blank', class: 'home-logo-instances', style: "background-color: #{portal[:color]}" do
-                = inline_svg('logo-white.svg', width: "35", height: "26")
-              %p{style: "color: #{portal[:color]}"}
-                = portal[:name]
-  .home-section
     .home-section-title
-      .text
-        = t('home.support_and_collaborations')
+      .text Support & Collaborations
       %hr.home-section-line/
     .home-support-items.matportal-collab-logos
       %a{href: "https://www.materials.fraunhofer.de/", target: "_blank", rel: "noopener noreferrer"}
@@ -225,12 +70,3 @@
       %a{href: "https://mat-o-lab.github.io/OrgSite/", target: "_blank", rel: "noopener noreferrer"}
         %img{src: "/matportal-logos/mat-o-lab.png", alt: "Mat-O-Lab"}
 
-= init_federation_portals_status
-
-:javascript
-  function submitAnnotator(){
-  document.getElementById("annotator_submit").click()
-  }
-  function submitRecommender(){
-  document.getElementById("recommender_submit").click()
-  }
