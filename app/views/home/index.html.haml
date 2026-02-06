@@ -44,7 +44,9 @@
         = t('home.index.welcome', site: $SITE)
       %p
         = t('home.index.tagline')
-      = ontologies_content_autocomplete
+      .search-inputs
+        = form_tag(search_path, method: 'get') do
+          = text_field_tag('query', nil, placeholder: t('home.index.query_placeholder'), autocomplete: 'off')
 
 .home-body-container
   .home-section
