@@ -171,6 +171,17 @@ module OntologiesHelper
     end
   end
 
+  # MatPortal home page uses the classic "Discover ontologies" CTA.
+  def discover_ontologies_button
+    render Buttons::RegularButtonComponent.new(
+      id: "discover-ontologies-button",
+      value: t("home.discover_ontologies_button", default: "Discover ontologies"),
+      variant: "primary",
+      state: "regular",
+      href: ontologies_path
+    )
+  end
+
   LANGUAGE_FILTERABLE_SECTIONS = %w[classes].freeze
 
   def ontology_object_json_link(ontology_acronym, object_type, id)

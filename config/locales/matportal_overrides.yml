@@ -1,8 +1,8 @@
 en:
   home:
+    discover_ontologies_button: "Discover ontologies"
     index:
       # MatPortal branding
       title: Welcome to the %{organization}
       tagline: the ontology repository for materials science.
       query_placeholder: Enter a class, e.g. Aluminium
-
